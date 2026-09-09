@@ -1,0 +1,49 @@
+﻿using GymManagement.Application.Interfaces;
+using GymManagement.Domain.Entities;
+using GymManagement.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace GymManagement.Infrastructure.Repositories
+{
+    public class SubscriptionPlanRepository : ISubscriptionPlanRepository
+    {
+        private readonly AppDbContext _context;
+
+        public SubscriptionPlanRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<SubscriptionPlan>> GetAllAsync()
+        {
+            return await _context.SubscriptionPlans.ToListAsync();
+        }
+
+        public async Task<SubscriptionPlan?> GetByIdAsync(int id)
+        {
+            return await _context.SubscriptionPlans.FindAsync(id);
+        }
+
+        public async Task AddAsync(SubscriptionPlan plan)
+        {
+            await _context.SubscriptionPlans.AddAsync(plan);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(SubscriptionPlan plan)
+        {
+            _context.SubscriptionPlans.Update(plan);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var plan = await _context.SubscriptionPlans.FindAsync(id);
+            if (plan != null)
+            {
+                _context.SubscriptionPlans.Remove(plan);
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+}

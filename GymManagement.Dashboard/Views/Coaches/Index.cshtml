@@ -1,0 +1,57 @@
+@model IEnumerable<GymManagement.Domain.Entities.Coach>
+@{
+    ViewData["Title"] = "المدربين";
+}
+
+<div class="page-header">
+    <h1 class="page-title">المدربين</h1>
+</div>
+
+<div class="toolbar">
+    <a href="@Url.Action("Create")" class="btn btn-primary">+ إضافة مدرب</a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>التخصص</th>
+                    <th>الهاتف</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 1;}
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@c.Name</td>
+                        <td>@c.Specialization</td>
+                        <td>@c.Phone</td>
+                        <td>
+                            <span class="badge @(c.Status == "نشط" ? "badge-success" : "badge-danger")">@c.Status</span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = c.CoachId })" class="btn btn-edit" title="تعديل">✏️</a>
+                            <form method="post" action="@Url.Action("Delete", new { id = c.CoachId })" style="display:inline"
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا المدرب؟')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-delete" title="حذف">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" style="text-align:center;padding:30px;color:#64748b">لا يوجد مدربين</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

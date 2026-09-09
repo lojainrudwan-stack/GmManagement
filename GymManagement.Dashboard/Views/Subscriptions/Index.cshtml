@@ -1,0 +1,70 @@
+@model IEnumerable<GymManagement.Domain.Entities.Subscription>
+@{
+    ViewData["Title"] = "الاشتراكات";
+}
+
+<div class="page-header">
+    <h1 class="page-title">الاشتراكات</h1>
+</div>
+
+<div class="toolbar">
+    <a href="@Url.Action("Create")" class="btn btn-primary">+ إضافة إشتراك</a>
+    <form method="get" action="@Url.Action("Index")" style="display:flex;gap:8px;align-items:center">
+        <div class="search-bar">
+            <input type="text" name="search" value="@ViewBag.Search" placeholder="ابحث برقم الإشتراك او اسم المشترك" />
+            <span class="search-bar-icon">🔍</span>
+        </div>
+        <button type="submit" class="btn btn-secondary" style="padding:8px 14px">بحث</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>رقم الإشتراك</th>
+                    <th>المشترك</th>
+                    <th>الباقة</th>
+                    <th>المدرب</th>
+                    <th>تاريخ البداية</th>
+                    <th>تاريخ النهاية</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 1;}
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@s.SubscriptionNumber</td>
+                        <td>@s.MemberName</td>
+                        <td>@s.Package</td>
+                        <td>@(string.IsNullOrWhiteSpace(s.CoachName) ? "-" : s.CoachName)</td>
+                        <td>@s.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@s.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <span class="badge @(s.Status == "نشط" ? "badge-success" : "badge-danger")">@s.Status</span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = s.SubscriptionId })" class="btn btn-edit" title="تعديل">✏️</a>
+                            <form method="post" action="@Url.Action("Delete", new { id = s.SubscriptionId })" style="display:inline"
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا الاشتراك؟')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-delete" title="حذف">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" style="text-align:center;padding:30px;color:#64748b">لا توجد اشتراكات</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

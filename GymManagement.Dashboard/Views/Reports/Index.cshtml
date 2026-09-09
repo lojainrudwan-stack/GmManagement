@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "التقارير";
+    var totalSubs = ViewBag.TotalSubscriptions;
+    var packageDist = ViewBag.PackageDistribution as IEnumerable<dynamic>;
+    var monthlyStats = ViewBag.MonthlyStats as IEnumerable<dynamic>;
+}
+
+<div class="page-header">
+    <h1 class="page-title">التقارير</h1>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Pie Chart Card -->
+    <div class="card">
+        <div class="card-header" style="justify-content:center;border-bottom:none">
+            <h3 style="text-align:center;color:#1e3a8a;font-size:18px">توزيع الإشتراكات حسب الباقة</h3>
+        </div>
+        <div class="card-body" style="display:flex;align-items:center;justify-content:center;position:relative;height:300px">
+            <canvas id="packageChart"></canvas>
+            
+            <div style="position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <span style="font-size:24px;font-weight:700;color:#8c6913">@totalSubs</span>
+                <span style="font-size:14px;font-weight:600;color:#64748b">الاجمالي</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bar Chart Card -->
+    <div class="card">
+        <div class="card-header" style="justify-content:center;border-bottom:none">
+            <h3 style="text-align:center;color:#1e3a8a;font-size:18px">عدد الإشتراكات خلال اخر 6 اشهر</h3>
+        </div>
+        <div class="card-body" style="height:300px">
+            <canvas id="monthlyBarChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Pie Chart
+        const packageData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(packageDist));
+        new Chart(document.getElementById('packageChart'), {
+            type: 'doughnut',
+            data: {
+                labels: packageData.map(p => p.Package + ' (' + p.Percent + '%)'),
+                datasets: [{
+                    data: packageData.map(p => p.Count),
+                    backgroundColor: ['#60a5fa', '#1e3a8a', '#9ca3af', '#b91c1c', '#f59e0b', '#10b981'],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 10,
+                            padding: 20,
+                            font: { family: 'Tajawal' }
+                        }
+                    },
+                    tooltip: { enabled: true }
+                }
+            }
+        });
+
+        // Bar Chart
+        const monthlyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthlyStats));
+        new Chart(document.getElementById('monthlyBarChart'), {
+            type: 'bar',
+            data: {
+                labels: monthlyData.map(m => m.Month),
+                datasets: [{
+                    data: monthlyData.map(m => m.Count),
+                    backgroundColor: '#60a5fa',
+                    barThickness: 24,
+                    borderRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { display: false },
+                        border: { display: false }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: { font: { family: 'Tajawal', size: 14 } }
+                    }
+                }
+            }
+        });
+    </script>
+}

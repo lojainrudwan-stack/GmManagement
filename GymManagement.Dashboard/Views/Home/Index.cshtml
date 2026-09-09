@@ -1,0 +1,130 @@
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    var stats = ViewBag.Stats as GymManagement.Dashboard.Application.DTOs.DashboardStatsDto;
+    var expiring = ViewBag.Expiring as List<GymManagement.Dashboard.Application.DTOs.ExpiringSubscriptionDto>;
+    var monthly = ViewBag.Monthly as List<GymManagement.Dashboard.Application.DTOs.MonthlyStatsDto>;
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">لوحة التحكم</h1>
+    <div class="welcome-box">
+        <strong>مرحبا بك</strong>
+        هذه نظرة عامة على أداء النادي اليوم
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card green">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">المشتركين النشطين</div>
+        <div class="stat-value">@(stats?.ActiveMembers ?? 0)</div>
+        <div class="stat-change">عن الشهر الماضي @(stats?.ActiveMembersChangePercent ?? 0)%</div>
+    </div>
+    <div class="stat-card red">
+        <div class="stat-icon">📋</div>
+        <div class="stat-label">الاشتراكات المنتهيه</div>
+        <div class="stat-value">@(stats?.ExpiredSubscriptions ?? 0)</div>
+        <div class="stat-change">عن الشهر الماضي @(stats?.ExpiredSubscriptionsChangePercent ?? 0)%</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">إجمالي الايرادات</div>
+        <div class="stat-value">@(stats?.TotalRevenue.ToString("N0") ?? "0")</div>
+        <div class="stat-change">عن الشهر الماضي @(stats?.RevenueChangePercent ?? 0)%</div>
+    </div>
+    <div class="stat-card yellow">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">الحضور اليوم</div>
+        <div class="stat-value">@(stats?.TodayAttendance ?? 0)</div>
+        <div class="stat-change">عن أمس @(stats?.AttendanceChangePercent ?? 0)%</div>
+    </div>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="dashboard-grid">
+
+    <!-- Expiring Subscriptions -->
+    <div class="card">
+        <div class="card-header">
+            الاشتراكات التي اوشكت على الانتهاء
+        </div>
+        <div class="card-body">
+            @if (expiring != null && expiring.Any())
+            {
+                <ul class="expiring-list">
+                    @foreach (var item in expiring)
+                    {
+                        <li class="expiring-item">
+                            <div class="member-info">
+                                <div class="avatar">@item.AvatarInitials</div>
+                                <span class="member-name">@item.MemberName</span>
+                            </div>
+                            <span class="expiring-badge">
+                                @if (item.DaysRemaining <= 0)
+                                {
+                                    <text>منتهي</text>
+                                }
+                                else if (item.DaysRemaining == 1)
+                                {
+                                    <text>ينتهي غداً</text>
+                                }
+                                else
+                                {
+                                    <text>ينتهي بعد @item.DaysRemaining ايام</text>
+                                }
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p style="text-align:center;color:#64748b;padding:20px 0">لا توجد اشتراكات على وشك الانتهاء</p>
+            }
+        </div>
+    </div>
+
+    <!-- Monthly Chart -->
+    <div class="card">
+        <div class="card-header">
+            إجماليات شهرية
+            <small style="font-weight:400;color:#64748b">عدد الاشتراكات الجديدة</small>
+        </div>
+        <div class="card-body chart-container">
+            <canvas id="monthlyChart" height="200"></canvas>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthly?.Select(m => m.Month).ToArray() ?? Array.Empty<string>()));
+        const data   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthly?.Select(m => m.NewSubscriptions).ToArray() ?? Array.Empty<int>()));
+
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2563eb',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+}

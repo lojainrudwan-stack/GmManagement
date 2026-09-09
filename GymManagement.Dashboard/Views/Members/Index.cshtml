@@ -1,0 +1,68 @@
+@model IEnumerable<GymManagement.Domain.Entities.Member>
+@{
+    ViewData["Title"] = "المشتركين";
+}
+
+<div class="page-header">
+    <h1 class="page-title">المشتركين</h1>
+</div>
+
+<div class="toolbar">
+    <a href="@Url.Action("Create")" class="btn btn-primary">+ إضافة مشترك</a>
+    <form method="get" action="@Url.Action("Index")" style="display:flex;gap:8px;align-items:center">
+        <div class="search-bar">
+            <input type="text" name="search" value="@ViewBag.Search" placeholder="إبحث بالاسم او الهاتف" />
+            <span class="search-bar-icon">🔍</span>
+        </div>
+        <button type="submit" class="btn btn-secondary" style="padding:8px 14px">بحث</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>الهاتف</th>
+                    <th>الجنس</th>
+                    <th>الباقة</th>
+                    <th>تاريخ الإشتراك</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 1;}
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@m.Name</td>
+                        <td>@m.Phone</td>
+                        <td>@m.Gender</td>
+                        <td>@m.Package</td>
+                        <td>@m.SubscriptionDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <span class="badge @(m.Status == "نشط" ? "badge-success" : "badge-danger")">@m.Status</span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = m.MemberId })" class="btn btn-edit" title="تعديل">✏️</a>
+                            <form method="post" action="@Url.Action("Delete", new { id = m.MemberId })" style="display:inline"
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا المشترك؟')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-delete" title="حذف">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b">لا توجد بيانات</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

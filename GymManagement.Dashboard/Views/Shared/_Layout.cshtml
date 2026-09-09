@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " - " : "")نادي رياضي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">🏋</div>
+        <span>نادي رياضي</span>
+    </div>
+    <ul class="nav-list">
+        <li>
+            <a href="@Url.Action("Index","Home")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                <span class="nav-icon">🏠</span> لوحة التحكم
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Members")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Members" ? "active" : "")">
+                <span class="nav-icon">👥</span> المشتركين
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Subscriptions")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Subscriptions" ? "active" : "")">
+                <span class="nav-icon">📅</span> الاشتراكات
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Packages")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Packages" ? "active" : "")">
+                <span class="nav-icon">📋</span> الباقات
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Attendance")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Attendance" ? "active" : "")">
+                <span class="nav-icon">✅</span> الحضور
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Reports")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
+                <span class="nav-icon">📊</span> التقارير
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","Coaches")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Coaches" ? "active" : "")">
+                <span class="nav-icon">🏅</span> المدربين
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="nav-icon">🔔</span> التنبيهات
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="nav-icon">⚙️</span> الاعدادات
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="nav-icon">🚪</span> تسجيل الخروج
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">✔ @TempData["Success"]</div>
+    }
+    @RenderBody()
+</main>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>

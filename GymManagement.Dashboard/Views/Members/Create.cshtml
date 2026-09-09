@@ -1,0 +1,65 @@
+@model GymManagement.Domain.Entities.Member
+@{
+    ViewData["Title"] = "إضافة مشترك";
+}
+
+<div class="page-header">
+    <h1 class="page-title">إضافة مشترك جديد</h1>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">← رجوع</a>
+</div>
+
+<div class="form-card">
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="Name">الاسم الكامل</label>
+            <input asp-for="Name" placeholder="أدخل اسم المشترك" />
+            <span asp-validation-for="Name" style="color:red;font-size:12px"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone">رقم الهاتف</label>
+            <input asp-for="Phone" placeholder="05XXXXXXXX" />
+            <span asp-validation-for="Phone" style="color:red;font-size:12px"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Gender">الجنس</label>
+            <select asp-for="Gender">
+                <option value="">-- اختر --</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Package">الباقة</label>
+            <select asp-for="Package">
+                <option value="">-- اختر الباقة --</option>
+                <option value="باقة شهرية">باقة شهرية</option>
+                <option value="باقة 3 اشهر">باقة 3 اشهر</option>
+                <option value="باقة سنوية">باقة سنوية</option>
+                <option value="6 اشهر">6 اشهر</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SubscriptionDate">تاريخ الاشتراك</label>
+            <input asp-for="SubscriptionDate" type="date" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status">الحالة</label>
+            <select asp-for="Status">
+                <option value="نشط">نشط</option>
+                <option value="منتهي">منتهي</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">حفظ</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">إلغاء</a>
+        </div>
+    </form>
+</div>

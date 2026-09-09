@@ -1,0 +1,56 @@
+@model GymManagement.Domain.Entities.Attendance
+@using GymManagement.Domain.Entities
+@{
+    ViewData["Title"] = "تسجيل حضور";
+    var members = ViewBag.Members as IEnumerable<Member> ?? Enumerable.Empty<Member>();
+}
+
+<div class="page-header">
+    <h1 class="page-title">تسجيل حضور</h1>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">← رجوع</a>
+</div>
+
+<div class="form-card">
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="MemberId">المشترك</label>
+            <select asp-for="MemberId">
+                <option value="">-- اختر المشترك --</option>
+                @foreach (var m in members)
+                {
+                    <option value="@m.MemberId">@m.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Date">التاريخ</label>
+            <input asp-for="Date" type="date" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CheckInTime">وقت الدخول</label>
+            <input asp-for="CheckInTime" type="time" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CheckOutTime">وقت الخروج</label>
+            <input asp-for="CheckOutTime" type="time" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status">الحالة</label>
+            <select asp-for="Status">
+                <option value="حضر">حضر</option>
+                <option value="غائب">غائب</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">حفظ</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">إلغاء</a>
+        </div>
+    </form>
+</div>

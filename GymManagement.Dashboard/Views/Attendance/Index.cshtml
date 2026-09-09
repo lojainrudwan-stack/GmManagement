@@ -1,0 +1,59 @@
+@model IEnumerable<GymManagement.Domain.Entities.Attendance>
+@{
+    ViewData["Title"] = "الحضور";
+}
+
+<div class="page-header">
+    <h1 class="page-title">الحضور</h1>
+</div>
+
+<div class="toolbar">
+    <a href="@Url.Action("Create")" class="btn btn-primary">+ تسجيل حضور</a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>المشترك</th>
+                    <th>التاريخ</th>
+                    <th>وقت الدخول</th>
+                    <th>وقت الخروج</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 1;}
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@a.MemberName</td>
+                        <td>@a.Date.ToString("yyyy-MM-dd")</td>
+                        <td>@a.CheckInTime</td>
+                        <td>@a.CheckOutTime</td>
+                        <td>
+                            <span class="badge badge-success">@a.Status</span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = a.AttendanceId })" class="btn btn-edit" title="تعديل">✏️</a>
+                            <form method="post" action="@Url.Action("Delete", new { id = a.AttendanceId })" style="display:inline"
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا السجل؟')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-delete" title="حذف">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b">لا توجد سجلات حضور</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

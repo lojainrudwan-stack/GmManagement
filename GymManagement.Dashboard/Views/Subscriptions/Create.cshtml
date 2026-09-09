@@ -1,0 +1,63 @@
+@model GymManagement.Domain.Entities.Subscription
+@using GymManagement.Domain.Entities
+@{
+    ViewData["Title"] = "إضافة اشتراك";
+    var members = ViewBag.Members as IEnumerable<Member> ?? Enumerable.Empty<Member>();
+    var plans = ViewBag.Plans as IEnumerable<SubscriptionPlan> ?? Enumerable.Empty<SubscriptionPlan>();
+}
+
+<div class="page-header">
+    <h1 class="page-title">إضافة اشتراك جديد</h1>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">← رجوع</a>
+</div>
+
+<div class="form-card">
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="MemberId">المشترك</label>
+            <select asp-for="MemberId">
+                <option value="">-- اختر المشترك --</option>
+                @foreach (var m in members)
+                {
+                    <option value="@m.MemberId">@m.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Package">الباقة</label>
+            <select asp-for="Package">
+                <option value="">-- اختر الباقة --</option>
+                @foreach (var p in plans)
+                {
+                    <option value="@p.Name">@p.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="StartDate">تاريخ البداية</label>
+            <input asp-for="StartDate" type="date" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EndDate">تاريخ النهاية</label>
+            <input asp-for="EndDate" type="date" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status">الحالة</label>
+            <select asp-for="Status">
+                <option value="نشط">نشط</option>
+                <option value="منتهي">منتهي</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">حفظ</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">إلغاء</a>
+        </div>
+    </form>
+</div>
